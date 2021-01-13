@@ -145,6 +145,8 @@ impl<'config> Gasometer<'config> {
 		let gas_refund = self.inner_mut()?.gas_refund(cost.clone());
 		let used_gas = self.inner_mut()?.used_gas;
 
+		log::trace!(target: "evm", "Computed costs: memory_gas: {:?}, gas_cost: {:?}, total used gas: {:?}", memory_gas, gas_cost, used_gas);
+
 		let all_gas_cost = memory_gas + used_gas + gas_cost;
 		if self.gas_limit < all_gas_cost {
 			self.inner = Err(ExitError::OutOfGas);
