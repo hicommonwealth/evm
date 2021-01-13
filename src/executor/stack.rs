@@ -452,6 +452,7 @@ impl<'backend, 'config, B: Backend> StackExecutor<'backend, 'config, B> {
 					.expect("substate vec always have length greater than one; qed");
 				let initial_after_gas = last_substate.gasometer.gas();
 				let diff = initial_after_gas - l64(initial_after_gas);
+				log::trace!(target: "evm", "Recording l64 rounding cost: {:?}", diff);
 				try_or_fail!(last_substate.gasometer.record_cost(diff));
 				last_substate.gasometer.gas()
 			} else {
@@ -468,6 +469,7 @@ impl<'backend, 'config, B: Backend> StackExecutor<'backend, 'config, B> {
 		let target_gas = target_gas.unwrap_or(after_gas);
 
 		let gas_limit = min(after_gas, target_gas);
+		log::trace!(target: "evm", "Recording gas_limit cost: {:?}", gas_limit);
 		try_or_fail!(
 			self.substates.last_mut()
 				.expect("substate vec always have length greater than one; qed")
@@ -621,6 +623,7 @@ impl<'backend, 'config, B: Backend> StackExecutor<'backend, 'config, B> {
 					.expect("substate vec always have length greater than one; qed");
 				let initial_after_gas = last_substate.gasometer.gas();
 				let diff = initial_after_gas - l64(initial_after_gas);
+				log::trace!(target: "evm", "Recording l64 rounding cost: {:?}", diff);
 				try_or_fail!(last_substate.gasometer.record_cost(diff));
 				last_substate.gasometer.gas()
 			} else {
@@ -637,6 +640,7 @@ impl<'backend, 'config, B: Backend> StackExecutor<'backend, 'config, B> {
 		let target_gas = target_gas.unwrap_or(after_gas);
 		let mut gas_limit = min(target_gas, after_gas);
 
+		log::trace!(target: "evm", "Recording gas_limit cost: {:?}", gas_limit);
 		try_or_fail!(
 			self.substates.last_mut()
 				.expect("substate vec always have length greater than one; qed")
@@ -678,6 +682,7 @@ impl<'backend, 'config, B: Backend> StackExecutor<'backend, 'config, B> {
 		if let Some(ret) = (self.precompile)(code_address, &input, Some(gas_limit), &context) {
 			return match ret {
 				Ok((s, out, cost)) => {
+					log::trace!(target: "evm", "Recording precompile cost: {:?}", cost);
 					let _ = self.substates.last_mut()
 						.expect("substate vec always have length greater than one; qed")
 						.gasometer

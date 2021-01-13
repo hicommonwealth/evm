@@ -135,6 +135,7 @@ impl<'config> Gasometer<'config> {
 		len: usize
 	) -> Result<(), ExitError> {
 		let cost = len * consts::G_CODEDEPOSIT;
+		log::trace!(target: "evm", "Recording deposit of size: {:?}", len);
 		self.record_cost(cost)
 	}
 
