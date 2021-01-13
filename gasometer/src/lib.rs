@@ -63,6 +63,15 @@ impl<'config> Gasometer<'config> {
 
 	/// Remaining gas.
 	pub fn gas(&self) -> usize {
+		if let Ok(inner) = &self.inner {
+			log::trace!(
+				target: "evm",
+				"memory_cost: {:?}, used_gas: {:?}, refunded_gas: {:?}",
+				inner.memory_cost,
+				inner.used_gas,
+				inner.refunded_gas,
+			);
+		}
 		match self.inner.as_ref() {
 			Ok(inner) => {
 				self.gas_limit - inner.used_gas -
