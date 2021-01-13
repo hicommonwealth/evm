@@ -378,8 +378,8 @@ pub fn opcode_cost<H: Handler>(
 		}),
 
 		Err(ExternalOpcode::Create) | Err(ExternalOpcode::Create2) => Some(MemoryCost {
-			offset: U256::from_big_endian(&stack.peek(1)?[..]),
-			len: U256::from_big_endian(&stack.peek(2)?[..]),
+			offset: U256::from_big_endian(&stack.peek(2)?[..]),
+			len: U256::from_big_endian(&stack.peek(3)?[..]),
 		}),
 
 		Err(ExternalOpcode::Call) | Err(ExternalOpcode::CallCode) => Some(MemoryCost {
