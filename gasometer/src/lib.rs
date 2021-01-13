@@ -66,7 +66,7 @@ impl<'config> Gasometer<'config> {
 		if let Ok(inner) = &self.inner {
 			log::trace!(
 				target: "evm",
-				"memory_cost: {:?}, used_gas: {:?}, refunded_gas: {:?}",
+				"Cost at gas() call: memory_cost: {:?}, used_gas: {:?}, refunded_gas: {:?}",
 				inner.memory_cost,
 				inner.used_gas,
 				inner.refunded_gas,
@@ -115,6 +115,7 @@ impl<'config> Gasometer<'config> {
 			return Err(ExitError::OutOfGas)
 		}
 
+		log::trace!(target: "evm", "Recording explicit cost: {:?}", cost);
 		self.inner_mut()?.used_gas += cost;
 		Ok(())
 	}
@@ -154,7 +155,7 @@ impl<'config> Gasometer<'config> {
 		let gas_refund = self.inner_mut()?.gas_refund(cost.clone());
 		let used_gas = self.inner_mut()?.used_gas;
 
-		log::trace!(target: "evm", "Computed costs: memory_gas: {:?}, gas_cost: {:?}, total used gas: {:?}", memory_gas, gas_cost, used_gas);
+		log::trace!(target: "evm", "Opcode costs: memory_gas: {:?}, gas_cost: {:?}, total used gas: {:?}", memory_gas, gas_cost, used_gas);
 
 		let all_gas_cost = memory_gas + used_gas + gas_cost;
 		if self.gas_limit < all_gas_cost {
@@ -204,6 +205,7 @@ impl<'config> Gasometer<'config> {
 			return Err(ExitError::OutOfGas);
 		}
 
+		log::trace!(target: "evm", "Recording transaction cost: {:?}", gas_cost);
 		self.inner_mut()?.used_gas += gas_cost;
 		Ok(())
 	}
