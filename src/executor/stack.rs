@@ -919,9 +919,11 @@ impl<'backend, 'config, B: Backend> Handler for StackExecutor<'backend, 'config,
 		let is_static = self.substates.last()
 			.expect("substate vec always have length greater than one; qed")
 			.is_static;
+		log::trace!(target: "evm", "Computing gas for opcode {:?} with stack {:?}, is static: {:?}", opcode, stack, is_static);
 		let (gas_cost, memory_cost) = gasometer::opcode_cost(
 			context.address, opcode, stack, is_static, &self.config, self
 		)?;
+		log::trace!(target: "evm", "Computed gas cost: {:?}, memory cost: {:?}", gas_cost, memory_cost);
 
 		let gasometer = &mut self.substates.last_mut()
 			.expect("substate vec always have length greater than one; qed")
