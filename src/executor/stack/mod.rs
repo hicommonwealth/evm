@@ -359,6 +359,7 @@ impl<'config, S: StackState<'config>> StackExecutor<'config, S> {
 		);
 
 		let address = self.create_address(scheme);
+		log::debug!(target: "evm", "Inc nonce on create_inner {:?}", caller);
 		self.state.inc_nonce(caller);
 
 		self.enter_substate(gas_limit, false);
