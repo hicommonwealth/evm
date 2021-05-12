@@ -324,6 +324,7 @@ impl<'config, S: StackState<'config>> StackExecutor<'config, S> {
 			}
 		}
 
+		log::debug!(target: "evm", "Create inner with caller {}", caller);
 		fn l64(gas: u64) -> u64 {
 			gas - gas / 64
 		}
@@ -476,6 +477,7 @@ impl<'config, S: StackState<'config>> StackExecutor<'config, S> {
 			gas - gas / 64
 		}
 
+		log::debug!(target: "evm", "Call inner at address {}", code_address);
 		let after_gas = if take_l64 && self.config.call_l64_after_gas {
 			if self.config.estimate {
 				let initial_after_gas = self.state.metadata().gasometer.gas();
